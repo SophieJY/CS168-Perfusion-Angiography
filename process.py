@@ -2,16 +2,28 @@ import scipy.io
 import sys
 import os
 import numpy as np
+import matplotlib.pyplot as plt
+from PIL import Image
 
-def import_mat(folder_path, filename):
-	mat = scipy.io.loadmat(folder_path + "/" + filename)
-	# print(mat['X'].shape)
-	# print(mat['X'][0][0][1])
-	for k in mat.keys():
-		if not k.startswith('__'):
-			print(k + " " + mat[k].dtype.name + " " + str(mat[k].shape))
-	inputs = extract_pixels(mat['X'], 0, 0)
-	print(len(inputs))
+def import_mat(folder_path, file_list):
+	for file in file_list:
+		mat = scipy.io.loadmat(folder_path + "/" + file)
+		# print(mat['X'].shape)
+		# for k in mat.keys():
+		# 	if not k.startswith('__'):
+		# 		print(k + " " + mat[k].dtype.name + " " + str(mat[k].shape))
+		inputs = extract_pixels(mat['X'], 0, 0)
+		print(inputs)
+		label = mat['CBF'][0][0]
+		print(label)
+		for i in range(20):
+			# The greyscale of picture are not on the same level
+			# Do we need to standardize them to the same level?
+			img = mat['X'][:, :, i]
+			plt.figure()
+			plt.imshow(img, cmap='gray')
+			plt.show()
+		# print(len(inputs))
 
 def extract_pixels(images, h_cord, w_cord):
 	_, _, n = images.shape
@@ -28,8 +40,7 @@ if __name__ == "__main__":
 		exit()
 	folder_path = sys.argv[1]
 	data_list = os.listdir(folder_path)
-	for data in data_list:
-		import_mat(folder_path, data)
+	import_mat(folder_path, data_list)
 
 
 
