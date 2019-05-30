@@ -23,7 +23,7 @@ def import_mat(folder_path, file_list):
 		#print(label)
 		for i in range(20):
 			# The greyscale of picture are not on the same level
-			# Do we need to standardize them to the same level?  normalization.
+			# Do we need to standardize them to the same level? normalization.
 			img = mat['X'][:, :, i]
 			img = tf.keras.utils.normalize(img,axis =1)
 			print(img)
