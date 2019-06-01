@@ -7,6 +7,7 @@ from random import randint
 from PIL import Image
 import tensorflow as tf
 from process import listdir_nohidden,import_mat,extract_pixels
+import pickle
 
 #global vars
 CBV = []
@@ -23,6 +24,7 @@ def preprocessing(folder_path):
 		CBV.append(label)
 		x = mat['X']
 		X.append(x)
+		print(i)
 		# flatten_x = []
 		# for i in range(20):
 		# 	img = mat['X'][:, :, i]
@@ -71,7 +73,7 @@ def bucket_sampling():
 		y = CBV[index][row_num][col_num]
 		# print(y)
 		if y == 4.440892098500626e-15:
-			if bk_0_num != threshold:
+			if bk_0_num < threshold:
 				bk_0_num += 1
 				# print("a")
 				# print(bk_0_num)
@@ -81,7 +83,7 @@ def bucket_sampling():
 			if bk_0_num == threshold:
 				full_0 = True
 		elif y > 4.440892098500626e-15 and y <= 1:
-			if bk_1_num != threshold:
+			if bk_1_num < threshold:
 				bk_1_num += 1
 				# print("b")
 				# print(bk_1_num)
@@ -91,7 +93,7 @@ def bucket_sampling():
 			if bk_1_num == threshold:
 				full_1 = True
 		elif y > 1 and y <= 5:
-			if bk_2_num != threshold:
+			if bk_2_num < threshold:
 				bk_2_num += 1
 				# print("c")
 				# print(bk_2_num)
@@ -101,7 +103,7 @@ def bucket_sampling():
 			if bk_2_num == threshold:
 				full_2 = True
 		elif y > 5 and y <= 10:
-			if bk_3_num != threshold:
+			if bk_3_num < threshold:
 				bk_3_num += 1
 				# print("d")
 				# print(bk_3_num)
@@ -111,7 +113,7 @@ def bucket_sampling():
 			if bk_3_num == threshold:
 				full_3 = True
 		elif y > 10 and y <= 15:
-			if bk_4_num != threshold:
+			if bk_4_num < threshold:
 				bk_4_num += 1
 				# print("e")
 				# print(bk_4_num)
@@ -121,7 +123,7 @@ def bucket_sampling():
 			if bk_4_num == threshold:
 				full_4 = True
 		elif y > 15 and y <= 20:
-			if bk_5_num != threshold:
+			if bk_5_num < threshold:
 				bk_5_num += 1
 				# print("f")
 				# print(bk_5_num)
@@ -131,33 +133,57 @@ def bucket_sampling():
 			if bk_5_num == threshold:
 				full_5 = True
 		elif y > 20 and y <= 30:
-			if bk_6_num != threshold:
+			if bk_6_num < threshold:
 				bk_6_num += 1
 				x = extract_pixels(X[index],row_num,col_num)
+				# if x[0] == 0.0:
+				# 	print("----")
+				# 	print(y)
+				# 	print(index)
+				# 	print(row_num)
+				# 	print(col_num)
 				x_train.append(x)
 				y_train.append(y)
 			if bk_6_num == threshold:
 				full_6 = True
 		elif y > 30 and y <= 40:
-			if bk_7_num != threshold:
+			if bk_7_num < threshold:
 				bk_7_num += 1
 				x = extract_pixels(X[index],row_num,col_num)
+				# if x[0] == 0.0:
+				# 	print("----")
+				# 	print(y)
+				# 	print(index)
+				# 	print(row_num)
+				# 	print(col_num)
 				x_train.append(x)
 				y_train.append(y)
 			if bk_7_num == threshold:
 				full_7 = True
 		elif y > 40 and y <= 50:
-			if bk_8_num != threshold:
+			if bk_8_num < threshold:
 				bk_8_num += 1
 				x = extract_pixels(X[index],row_num,col_num)
+				# if x[0] == 0.0:
+				# 	print("----")
+				# 	print(y)
+				# 	print(index)
+				# 	print(row_num)
+				# 	print(col_num)
 				x_train.append(x)
 				y_train.append(y)
 			if bk_8_num == threshold:
 				full_8 = True
 		elif y > 50 and y <= 80:
-			if bk_9_num != threshold:
+			if bk_9_num < threshold:
 				bk_9_num += 1
 				x = extract_pixels(X[index],row_num,col_num)
+				# if x[0] == 0.0:
+				# 	print("----")
+				# 	print(y)
+				# 	print(index)
+				# 	print(row_num)
+				# 	print(col_num)
 				x_train.append(x)
 				y_train.append(y)
 			if bk_9_num == threshold:
@@ -183,11 +209,23 @@ if __name__ == "__main__":
 	data_list.pop(0)
 	preprocessing(folder_path)
 	# print(CBV)
+	print("preprocessing complete")
 	# print(X)
 	# flatten_CBV = np.array(flatten_CBV)
 	bucket_sampling()
+	with open('input.pkl','wb') as f:
+		pickle.dump(x_train,f)
+	with open('output.pkl','wb') as v:
+		pickle.dump(y_train,v)
+
+	# with open('input.pkl','rb') as f:	
+	# 	inp = pickle.load(f)
+	# with open('output.pkl','rb') as v:
+	# 	outp = pickle.load(v)
+	# print(inp[40000:41000])
+	# print(outp[40000:41000])
 	# print(np.array(X))
 	# print(X)
-	print(x_train)
-	print(y_train)
+	# print(x_train)
+	# print(y_train)
 		# print(flatten_CBV[0])
