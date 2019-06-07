@@ -56,9 +56,11 @@ def import_data(input_train_folder, output_train_folder, input_test_folder, outp
 	y_train = put_together(output_train_folder)
 	iter_num = get_length(input_test_folder)
 	X_test_files = os.listdir(input_test_folder)
-	y_test_files = os.listdir(output_test_folder)
+	y_test_files = os.listdir(output_test_folder)[1:]
 	X_test_files.sort()
 	y_test_files.sort()
+	print(X_test_files)
+	print(y_test_files)
 	# y_test = form_matrix(output_test_folder, y_test_files[0])
 	# original_image = np.reshape(y_test, (1024, 1024))
 	# print(original_image[0][0])
@@ -108,7 +110,7 @@ def import_data(input_train_folder, output_train_folder, input_test_folder, outp
 		print(image[100][100])
 		mse_sum += performance_measure(krr_model, y_predict.flatten(), y_test)
 	print("Mse: ")
-	# print(mse_sum/iter_num)
+	print(mse_sum/iter_num)
 
 def put_together(folder_path):
 	input_matrix = []
@@ -142,6 +144,7 @@ def get_length(test_folder):
 
 def form_matrix(folder_path, file):
 	with open(folder_path + "/" + file,'rb') as f:	
+		print(file)
 		inp = pickle.load(f)
 		input_array = np.asarray(inp, dtype=np.float32)
 		print("test_input_array_size:")
@@ -150,7 +153,7 @@ def form_matrix(folder_path, file):
 
 def build_model(input_train, label_train):
 	#!!!May need to change the kernel function and alpha value
-	kr = KernelRidge(kernel="poly", degree=2, alpha=1).fit(input_train, label_train)
+	kr = KernelRidge(kernel="poly", degree=6, alpha=1).fit(input_train, label_train)
 	return kr
 
 def predict_result(model, input_data):
