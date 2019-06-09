@@ -52,11 +52,11 @@ def show_color_map(img):
 	plt.show()
 
 def import_data(input_train_folder, output_train_folder, input_test_folder, output_test_folder):
-	X_train = put_together(input_train_folder)
+	X_train = put_together_extended(input_train_folder)
 	y_train = put_together(output_train_folder)
 	iter_num = get_length(input_test_folder)
 	X_test_files = os.listdir(input_test_folder)
-	y_test_files = os.listdir(output_test_folder)[1:]
+	y_test_files = os.listdir(output_test_folder)
 	X_test_files.sort()
 	y_test_files.sort()
 	print(X_test_files)
@@ -112,6 +112,30 @@ def import_data(input_train_folder, output_train_folder, input_test_folder, outp
 	print("Mse: ")
 	print(mse_sum/iter_num)
 
+def put_together_extended(folder_path):
+	input_matrix = []
+	data_list = get_list(folder_path)
+	threshold = 40
+	for file in data_list:
+		if file == '_DS_Store':
+			continue
+		name = file.split('.')[0]
+		patient_id = name.split('_')[-1]
+		if patient_id not in clean_data_num:
+			with open(folder_path + "/" + file,'rb') as f:	
+				inp = pickle.load(f)
+				# print("input length: ")
+				# print(len(inp))
+				# print("matric length: ")
+				# print(len(input_matrix))
+				input_matrix = input_matrix + inp.tolist()
+				# print("matric length: ")
+				# print(len(input_matrix))
+	train_matrix = np.asarray(input_matrix, dtype=np.float32)
+	print("Input Matrix shape: ")
+	print(train_matrix.shape)
+	return train_matrix
+
 def put_together(folder_path):
 	input_matrix = []
 	data_list = get_list(folder_path)
@@ -153,7 +177,7 @@ def form_matrix(folder_path, file):
 
 def build_model(input_train, label_train):
 	#!!!May need to change the kernel function and alpha value
-	kr = KernelRidge(kernel="poly", degree=6, alpha=1).fit(input_train, label_train)
+	kr = KernelRidge(kernel="poly", degree=5, alpha=1).fit(input_train, label_train)
 	return kr
 
 def predict_result(model, input_data):
